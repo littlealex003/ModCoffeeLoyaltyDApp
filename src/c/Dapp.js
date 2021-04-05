@@ -63,6 +63,7 @@ export class Dapp extends React.Component {
       <MainPage
         state={this.state}
         transferTokens={(to, amount) => this._transferTokens(to, amount)}
+        burnTokens={(amount) => this._burnTokens(amount)}
         getRpcErrorMessage={(error) => this._getRpcErrorMessage(error)}
         dismissTransactionError={() => this._dismissTransactionError()}
       />
@@ -167,6 +168,39 @@ export class Dapp extends React.Component {
 
   componentWillUnmount() {
     this._stopPollingData();
+  }
+
+
+  async _burnTokens(amount) {
+    try {
+      // If a transaction fails, we save that error in the component's state.
+      // We only save one such error, so before sending a second transaction, we
+      // clear it.
+      this._dismissTransactionError();
+
+      // We send the transaction, and save its hash in the Dapp's state. This
+      // way we can indicate that we are waiting for it to be mined.
+      const tx = await this._token.burn(amount);
+      this.setState({ txBeingSent: tx.hash });
+      // We use .wait() to wait for the transaction to be mined. This method
+      // returns the transaction's receipt.
+      const receipt = await tx.wait();
+      // The receipt, contains a status flag, which is 0 to indicate an error.
+      if (receipt.status === 0) {
+        // We can't know the exact error that make the transaction fail once it
+        // was mined, so we throw this generic one.
+        throw new Error("Transaction failed");
+      }
+      await this._updateBalance();
+    } catch (error) {
+      if (error.code === ERROR_CODE_TX_REJECTED_BY_USER) {
+        return;
+      }
+      console.error(error);
+      this.setState({ transactionError: error });
+    } finally {
+      this.setState({ txBeingSent: undefined });
+    }
   }
 
   async _transferTokens(to, amount) {

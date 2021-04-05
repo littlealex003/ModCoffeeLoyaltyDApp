@@ -1,4 +1,5 @@
 import React from "react";
+import { Burn } from "../components/BurnComponent";
 import { Transfer } from "../components/TransferComponent";
 import { TransactionErrorMessage } from "../components/TransactionErrorMessageComponent";
 import { WaitingForTransactionMessage } from "../components/WaitingForTransactionMessageComponent";
@@ -7,6 +8,7 @@ import { NoTokensMessage } from "../components/NoTokensMessageComponent";
 export function MainPage({
   state,
   transferTokens,
+  burnTokens,
   getRpcErrorMessage,
   dismissTransactionError,
 }) {
@@ -17,9 +19,7 @@ export function MainPage({
           <h1>
             {state.tokenData.name} ({state.tokenData.symbol})
           </h1>
-          <h5>
-            SmartContractAddress: {state.smartContractAddress}
-          </h5>
+          <h5>SmartContractAddress: {state.smartContractAddress}</h5>
           <p>
             Welcome <b>{state.selectedAddress}</b>, you have{" "}
             <b>
@@ -53,6 +53,16 @@ export function MainPage({
           {state.balance.gt(0) && (
             <Transfer
               transferTokens={transferTokens}
+              tokenSymbol={state.tokenData.symbol}
+            />
+          )}
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-12">
+          {state.balance.gt(0) && (
+            <Burn
+              burnTokens={burnTokens}
               tokenSymbol={state.tokenData.symbol}
             />
           )}
