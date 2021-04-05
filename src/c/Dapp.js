@@ -1,7 +1,7 @@
 import React from "react";
 
-import { NoMetamaskFound } from "../v/NoMetamaskFound";
-import { ConnectWallet } from "../v/ConnectWallet";
+import { NoMetamaskFoundPage } from "../v/pages/NoMetamaskFoundPage";
+import { ConnectWalletPage } from "../v/pages/ConnectWalletPage";
 
 const HARDHAT_NETWORK_ID = "31337";
 
@@ -38,7 +38,7 @@ export class Dapp extends React.Component {
     if (!this.state.selectedAddress) {
       console.log("Wallet not connected");
       return (
-        <ConnectWallet
+        <ConnectWalletPage
           connectWallet={() => this._connectWallet()}
           networkError={this.state.networkError}
           dismiss={() => this._dismissNetworkError()}

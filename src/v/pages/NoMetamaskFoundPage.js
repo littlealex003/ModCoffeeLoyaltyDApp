@@ -1,6 +1,6 @@
 import React from "react";
 
-export function NoMetamaskFound() {
+export function NoMetamaskFoundPage() {
   return (
     <div className="container">
       <div className="row justify-content-md-center">
