@@ -30,6 +30,7 @@ export class Dapp extends React.Component {
     // You don't need to follow this pattern, but it's an useful example.
     this.initialState = {
       tokenData: undefined,
+      smartContractAddress: contractAddress.Token,
       selectedAddress: undefined,
       balance: undefined,
       txBeingSent: undefined,

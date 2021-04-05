@@ -4,7 +4,12 @@ import { TransactionErrorMessage } from "../components/TransactionErrorMessageCo
 import { WaitingForTransactionMessage } from "../components/WaitingForTransactionMessageComponent";
 import { NoTokensMessage } from "../components/NoTokensMessageComponent";
 
-export function MainPage({ state , transferTokens, getRpcErrorMessage, dismissTransactionError }) {
+export function MainPage({
+  state,
+  transferTokens,
+  getRpcErrorMessage,
+  dismissTransactionError,
+}) {
   return (
     <div className="container p-4">
       <div className="row">
@@ -12,6 +17,9 @@ export function MainPage({ state , transferTokens, getRpcErrorMessage, dismissTr
           <h1>
             {state.tokenData.name} ({state.tokenData.symbol})
           </h1>
+          <h5>
+            SmartContractAddress: {state.smartContractAddress}
+          </h5>
           <p>
             Welcome <b>{state.selectedAddress}</b>, you have{" "}
             <b>
