@@ -4,7 +4,7 @@ import { TransactionErrorMessage } from "../components/TransactionErrorMessageCo
 import { WaitingForTransactionMessage } from "../components/WaitingForTransactionMessageComponent";
 import { NoTokensMessage } from "../components/NoTokensMessageComponent";
 
-export function MainPage({ state }) {
+export function MainPage({ state , transferTokens, getRpcErrorMessage, dismissTransactionError }) {
   return (
     <div className="container p-4">
       <div className="row">
@@ -31,8 +31,8 @@ export function MainPage({ state }) {
           )}
           {state.transactionError && (
             <TransactionErrorMessage
-              message={this._getRpcErrorMessage(state.transactionError)}
-              dismiss={() => this._dismissTransactionError()}
+              message={getRpcErrorMessage(state.transactionError)}
+              dismiss={dismissTransactionError}
             />
           )}
         </div>
@@ -44,7 +44,7 @@ export function MainPage({ state }) {
           )}
           {state.balance.gt(0) && (
             <Transfer
-              transferTokens={(to, amount) => this._transferTokens(to, amount)}
+              transferTokens={transferTokens}
               tokenSymbol={state.tokenData.symbol}
             />
           )}
