@@ -9,6 +9,8 @@ import { LoadingPage } from "../v/pages/LoadingPage";
 import { MainPage } from "../v/pages/MainPage";
 
 const HARDHAT_NETWORK_ID = "31337";
+const LOCAL_NETWORK_ID = "1337";
+const RINKEBY_NETWORK_ID = "4";
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
 
@@ -102,7 +104,11 @@ export class Dapp extends React.Component {
 
   // This method checks if Metamask selected network is Localhost:8545
   _checkNetwork() {
-    if (window.ethereum.networkVersion === HARDHAT_NETWORK_ID) {
+    if (
+      window.ethereum.networkVersion === LOCAL_NETWORK_ID ||
+      window.ethereum.networkVersion === RINKEBY_NETWORK_ID ||
+      window.ethereum.networkVersion === HARDHAT_NETWORK_ID
+    ) {
       return true;
     }
 
@@ -158,11 +164,9 @@ export class Dapp extends React.Component {
     this.setState({ balance });
   }
 
-
   componentWillUnmount() {
     this._stopPollingData();
   }
-
 
   async _transferTokens(to, amount) {
     // Sending a transaction is a complex operation:
@@ -183,6 +187,7 @@ export class Dapp extends React.Component {
       // We send the transaction, and save its hash in the Dapp's state. This
       // way we can indicate that we are waiting for it to be mined.
       const tx = await this._token.transfer(to, amount);
+      // const tx = await this._token.transferFrom(this.state.selectedAddress, to, amount);
       this.setState({ txBeingSent: tx.hash });
 
       // We use .wait() to wait for the transaction to be mined. This method
