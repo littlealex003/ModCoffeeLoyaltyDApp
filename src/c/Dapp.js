@@ -1,7 +1,11 @@
 import React from "react";
-
+import { ethers } from "ethers";
+import TokenArtifact from "../contracts/Token.json";
+import contractAddress from "../contracts/contract-address.json";
+// 
 import { NoMetamaskFoundPage } from "../v/pages/NoMetamaskFoundPage";
 import { ConnectWalletPage } from "../v/pages/ConnectWalletPage";
+import { LoadingPage } from "../v/pages/LoadingPage";
 
 const HARDHAT_NETWORK_ID = "31337";
 
@@ -10,7 +14,7 @@ export class Dapp extends React.Component {
     this.setState({
       selectedAddress: userAddress,
     });
-    // this._intializeEthers();
+    this._intializeEthers();
     // this._getTokenData();
     // this._startPollingData();
   }
@@ -44,6 +48,10 @@ export class Dapp extends React.Component {
           dismiss={() => this._dismissNetworkError()}
         />
       );
+    }
+    if (!this.state.tokenData || !this.state.balance) {
+      console.log("Token data or user's balance hasn't loaded yet");
+      return <LoadingPage />;
     }
 
     return "hello world";
@@ -79,5 +87,14 @@ export class Dapp extends React.Component {
     });
 
     return false;
+  }
+
+  async _intializeEthers() {
+    this._provider = new ethers.providers.Web3Provider(window.ethereum);
+    this._token = new ethers.Contract(
+      contractAddress.Token,
+      TokenArtifact.abi,
+      this._provider.getSigner(0)
+    );
   }
 }
