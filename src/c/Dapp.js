@@ -40,12 +40,14 @@ export class Dapp extends React.Component {
 
     this.state = this.initialState;
   }
+
   render() {
-    if (window.ethereum === undefined) {
-      console.log("No Metamask Installed");
+    console.log(window.ethereum.toString());
+    if (window.ethereum === undefined&&window.web3 === "undefined") {
+      console.log("No Metamask or Other Wallet Installed");
       return <NoMetamaskFoundPage />;
     }
-    if (!this.state.selectedAddress) {
+    if ((window.ethereum&&!this.state.selectedAddress)||(window.web3.eth!=undefined&&window.web3.eth.accounts[0]!=undefined)) {
       console.log("Wallet not connected");
       return (
         <ConnectWalletPage
@@ -122,6 +124,19 @@ export class Dapp extends React.Component {
   }
 
   async _intializeEthers() {
+    if (
+      typeof window.ethereum !== "undefined" ||
+      typeof window.web3 !== "undefined"
+    ) {
+      // Web3 browser user detected. You can now use the provider.
+      const provider =
+        typeof window.ethereum !== "undefined"
+          ? window.ethereum
+          : window.web3.currentProvider;
+      // const provider = (typeof window.ethereum !== 'undefined')?
+      // window['ethereum'] : window.web3.currentProvider
+    }
+
     this._provider = new ethers.providers.Web3Provider(window.ethereum);
     this._token = new ethers.Contract(
       contractAddress.Token,
@@ -169,7 +184,6 @@ export class Dapp extends React.Component {
   componentWillUnmount() {
     this._stopPollingData();
   }
-
 
   async _burnTokens(amount) {
     try {
